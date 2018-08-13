@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
         ylab = "Number of Junctions", main = "Example Infinite Chromosome")
 
 ## ---- repl_sim_inf-------------------------------------------------------
-  number_replicates <- 100
+  number_replicates <- 10
   v <- c();
   for (r in 1:number_replicates) {
     v2 <- sim_inf_chrom(N, H_0, maximum_time, C, number_of_markers, sample(1e9,1))  

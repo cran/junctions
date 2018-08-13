@@ -14,8 +14,6 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
 # junctions vignette
 In this vignette we will take you through the different functions provided in the R package 'junctions', and show how the functions interrelate to each other.
 In the package junctions we have bundled functions and simulation code to study how ancestry blocks after hybridization decay due to recombination. We assume populations of a constant population size, random mating, and a uniform recombination rate across the chromosome (see the Supplementary material of the paper for scenario's in which we relax some of these assumptions). Furthermore, we assume that no secondary introgression takes place, and we ignore the effect of selection (see the Discussion section of the main paper for a full discussion of the scenario's that are not covered in the model). 
@@ -49,7 +47,7 @@ Given stochastic junction accumulation, we observe that the number of junctions,
 If we are to compare the accumulation of junctions with our mathematical predictions, we will need to average over a number of replicates.
 
 ```{r, repl_sim_inf}
-  number_replicates <- 100
+  number_replicates <- 10
   v <- c();
   for (r in 1:number_replicates) {
     v2 <- sim_inf_chrom(N, H_0, maximum_time, C, number_of_markers, sample(1e9,1))  
