@@ -1,20 +1,32 @@
-Package: junctions
 Type: Package
+Package: junctions
 Title: The Breakdown of Genomic Ancestry Blocks in Hybrid Lineages
-Version: 1.1.1
-Date: 2021-04-16
-Authors@R: c(person("Thijs","Janzen", email = "thijsjanzen@gmail.com", role=c("aut","cre")))
-URL: https//github.com/thijsjanzen/junctions
-Description: Individual based simulations of hybridizing populations, where the accumulation of junctions is tracked. Furthermore, mathematical equations are provided to verify simulation outcomes. Both simulations and mathematical equations are based on Janzen (2018) <doi:10.1101/058107>.
+Version: 2.0.1
+Authors@R: 
+    person(given = "Thijs",
+           family = "Janzen",
+           role = c("aut", "cre"),
+           email = "thijsjanzen@gmail.com")
+Description: Individual based simulations of hybridizing populations,
+    where the accumulation of junctions is tracked. Furthermore,
+    mathematical equations are provided to verify simulation outcomes.
+    Both simulations and mathematical equations are based on Janzen
+    (2018, <doi:10.1101/058107>) and Janzen (2020,
+    <doi:10.1101/2020.09.10.292441>).
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.13)
-LinkingTo: Rcpp
-SystemRequirements: C++11
-Suggests: testit, testthat, knitr, rmarkdown
+URL: https//github.com/thijsjanzen/junctions
+BugReports: https://github.com/thijsjanzen/junctions/issues
+Depends: RcppParallel (>= 5.0.0)
+Imports: nloptr, Rcpp, tibble
+Suggests: dplyr, ggplot2, knitr, magrittr, rmarkdown, testthat, tidyr
+LinkingTo: nloptr, Rcpp, RcppParallel
 VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+SystemRequirements: C++14
 NeedsCompilation: yes
-Packaged: 2021-04-16 12:26:26 UTC; p251362
+Packaged: 2021-05-26 16:41:40 UTC; p251362
 Author: Thijs Janzen [aut, cre]
 Maintainer: Thijs Janzen <thijsjanzen@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-04-16 12:40:03 UTC
+Date/Publication: 2021-05-26 17:40:05 UTC

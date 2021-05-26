@@ -1,6 +1,6 @@
 //
 //  Fish.hpp
-//  
+//
 //
 //  Created by Thijs Janzen on 07/11/2017.
 //
@@ -12,38 +12,16 @@
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include "random_functions.h"
+#include <Rcpp.h>
 
 struct junction {
-    long double pos;
-    int left, right;
+    double pos;
+    int right;
 
-    junction()  {
-    }
-
-    junction(long double loc, int A, int B) : pos(loc), left(A), right(B) {
-    }
-
-    junction(const junction& other) {
-        pos = other.pos;
-        left = other.left;
-        right = other.right;
-    }
-
-    bool operator ==(const junction& other) const {
-        if(pos != other.pos) return false;
-        if(left != other.left) return false;
-        if(right != other.right) return false;
-
-        return true;
-    }
-
-    bool operator <(const junction& other) const {
-        return(pos < other.pos);
-    }
-
-    bool operator !=(const junction& other) const {
-        return( !( (*this) == other) );
-    }
+    junction();
+    junction(double loc, int A);
+    junction(const junction& other);
 };
 
 
@@ -51,58 +29,84 @@ struct Fish_inf {
     std::vector< junction > chromosome1;
     std::vector< junction > chromosome2;
 
-    Fish_inf()
-    {}
-
-    Fish_inf(int initLoc)    {
-        junction left = junction(0.0, -1, initLoc);
-        junction right = junction(1, initLoc, -1);
-        chromosome1.push_back( left  );
-        chromosome1.push_back( right );
-        chromosome2.push_back( left  );
-        chromosome2.push_back( right );
-    }
-
-    Fish_inf(const std::vector<junction>& A,
-             const std::vector<junction>& B)    {
-        chromosome1 = A;
-        chromosome2 = B;
-    }
+    Fish_inf();
+    Fish_inf(int initLoc);
+    Fish_inf(const Fish_inf& other);
+    Fish_inf(Fish_inf&& other);
+    Fish_inf& operator=(Fish_inf&& other);
+    Fish_inf& operator=(const Fish_inf& other);
 };
 
 struct Fish_fin  {
     std::vector<bool> chromosome1;
     std::vector<bool> chromosome2;
 
-    Fish_fin() {
+    Fish_fin();
+    Fish_fin(const bool initLoc, const int genomeSize);
+};
+
+struct Fish_explicit {
+    std::vector< int > chromosome1;
+    std::vector< int > chromosome2;
+
+    Fish_explicit()
+    {}
+
+    Fish_explicit(const std::vector< int >& c1,
+                  const std::vector< int >& c2) :
+        chromosome1(c1), chromosome2(c2) {
     }
 
-    // constructor that sets all genome elements to "initLoc"
-    Fish_fin(const bool initLoc, const int genomeSize) {
-        for ( int i = 0; i < genomeSize; ++i ) {
-            chromosome1.push_back(initLoc);
-            chromosome2.push_back(initLoc);
+    Fish_explicit(int allele, size_t num_markers) {
+        chromosome1 = std::vector<int>(num_markers, allele);
+        chromosome2 = chromosome1;
+    }
+
+    std::vector< int > gamete(double morgan,
+                              rnd_t& rndgen,
+                              const emp_genome& emp_gen) const {
+
+        std::vector<size_t> recom_pos = emp_gen.recompos(morgan,
+                                                         rndgen);
+
+        if (recom_pos.size() == 1) {
+            if(rndgen.random_number(2)) {
+                return chromosome1;
+            }
+            return chromosome2;
         }
-    }
 
-    // copy constructor
-    Fish_fin(const std::vector<bool>& A, const std::vector<bool>& B) {
-        chromosome1 = A;
-        chromosome2 = B;
+        std::vector < std::vector<int>::const_iterator > iters = {chromosome1.begin(),
+                                                                  chromosome2.begin()};
+        std::vector< int > recombined_chromosome;
+        int index = rndgen.random_number(2);
+        size_t prev_start = 0;
+
+        for(size_t i = 0; i < recom_pos.size(); ++i) {
+            auto start = iters[index] + prev_start;
+            auto end   = iters[index] + recom_pos[i];
+
+            prev_start = recom_pos[i];
+            recombined_chromosome.insert(recombined_chromosome.end(), start, end);
+            index = 1 - index;
+        }
+
+        return recombined_chromosome;
     }
 };
 
 
+
 Fish_fin mate_fin(const Fish_fin& A, const Fish_fin& B,
-          double numRecombinations);
+                  double numRecombinations, rnd_t& rndgen);
 
 Fish_inf mate_inf(const Fish_inf& A, const Fish_inf& B,
-                  double numRecombinations);
+                  double numRecombinations, rnd_t& rndgen);
 
 long double getRecomPos();
-int getRecomPos(int L);
+int getRecomPos(int L, rnd_t& rndgen);
 
-
-
+bool is_in_time_points(int t,
+                       const Rcpp::NumericVector& time_points);
 
 #endif /* Fish_hpp */
