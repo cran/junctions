@@ -1,7 +1,7 @@
 Type: Package
 Package: junctions
 Title: The Breakdown of Genomic Ancestry Blocks in Hybrid Lineages
-Version: 2.0.1
+Version: 2.0.3
 Authors@R: 
     person(given = "Thijs",
            family = "Janzen",
@@ -22,11 +22,11 @@ Suggests: dplyr, ggplot2, knitr, magrittr, rmarkdown, testthat, tidyr
 LinkingTo: nloptr, Rcpp, RcppParallel
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 SystemRequirements: C++14
 NeedsCompilation: yes
-Packaged: 2021-05-26 16:41:40 UTC; p251362
+Packaged: 2022-02-24 11:58:23 UTC; thijsjanzen
 Author: Thijs Janzen [aut, cre]
 Maintainer: Thijs Janzen <thijsjanzen@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-05-26 17:40:05 UTC
+Date/Publication: 2022-02-24 12:30:02 UTC
