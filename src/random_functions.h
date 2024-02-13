@@ -1,3 +1,13 @@
+// Copyright 2018 - 2024 Thijs Janzen
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
 //  random_functions.hpp
 //
@@ -6,26 +16,26 @@
 //
 //
 
-#ifndef random_functions_hpp
-#define random_functions_hpp
+#pragma once
 
 #include <random>
 #include <vector>
+#include <algorithm>
 
 struct rnd_t {
-  std::mt19937 rndgen_;
+  std::mt19937_64 rndgen_;
 
   rnd_t() {
     std::random_device rd;
-    rndgen_ = std::mt19937(rd());
+    rndgen_ = std::mt19937_64(rd());
   }
 
-  rnd_t(unsigned int seed) {
-    rndgen_ = std::mt19937(seed);
+  explicit rnd_t(unsigned int seed) {
+    rndgen_ = std::mt19937_64(seed);
   }
 
   void set_seed(unsigned int s) {
-    rndgen_ = std::mt19937(s);
+    rndgen_ = std::mt19937_64(s);
   }
 
   std::uniform_real_distribution<> unif_dist =
@@ -45,7 +55,7 @@ struct rnd_t {
 
   std::vector<double> generate_random_markers(int number_of_markers) {
     std::vector<double> markers(number_of_markers);
-    for(int i = 0; i < number_of_markers; ++i) {
+    for (int i = 0; i < number_of_markers; ++i) {
       markers[i] = uniform();
     }
     std::sort(markers.begin(), markers.end());
@@ -73,7 +83,7 @@ struct emp_genome {
   }
 
   template <typename T>
-  emp_genome(const std::vector<T>& positions) {
+  explicit emp_genome(const std::vector<T>& positions) {
     pos = positions;
     double total_sum = std::accumulate(positions.begin(),
                                        positions.end(), 0.0);
@@ -99,7 +109,7 @@ struct emp_genome {
                                  rnd_t& rndgen) const {
     size_t num_break_points = rndgen.poisson(morgan);
     std::vector< size_t > indices;
-    for(size_t i = 0; i < num_break_points; ++i) {
+    for (size_t i = 0; i < num_break_points; ++i) {
       auto found_index = index_from_cdf(rndgen.uniform());
       if (found_index > 0) {
         indices.push_back(found_index);
@@ -110,6 +120,3 @@ struct emp_genome {
     return indices;
   }
 };
-
-
-#endif /* random_functions_hpp */

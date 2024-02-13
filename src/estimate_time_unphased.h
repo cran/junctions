@@ -1,5 +1,19 @@
+// Copyright 2018 - 2024 Thijs Janzen
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+#pragma once
+
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 //
 // from: https://rosettacode.org/wiki/Matrix-exponentiation_operator#C.2B.2B
@@ -10,12 +24,12 @@ class SqMx {
   typedef T Ax[MSize][MSize];
   typedef SqMx<MSize, T> Mx;
 
-private:
+ private:
   Ax a;
   SqMx() { }
 
-public:
-  SqMx(const Ax &_a) { // constructor with pre-defined array
+ public:
+  explicit SqMx(const Ax &_a) {   // constructor with pre-defined array
     for (int r = 0; r < MSize; r++)
       for (int c = 0; c < MSize; c++)
         a[r][c] = _a[r][c];
@@ -29,8 +43,7 @@ public:
     return m;
   }
 
-  friend std::ostream &operator<<(std::ostream& os, const Mx &p)
-  { // ugly print
+  friend std::ostream &operator<<(std::ostream& os, const Mx &p) {
     for (int i = 0; i < MSize; i++) {
       for (int j = 0; j < MSize; j++)
         os << p.a[i][j] << ',';
@@ -66,7 +79,7 @@ public:
 
   std::vector< double > operator()() {
     std::vector< double> output(MSize);
-    for(int i = 0; i < MSize; ++i) {
+    for (int i = 0; i < MSize; ++i) {
       output[i] = static_cast<double>(a[0][i]);
     }
     return output;

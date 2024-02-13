@@ -1,3 +1,14 @@
+// Copyright 2018 - 2024 Thijs Janzen
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
 //
 //  Fish.cpp
 //
@@ -6,11 +17,12 @@
 //
 //
 
-#include "Fish.h"
-#include "random_functions.h"
+#include <utility>
+
+#include "Fish.h"                           // NOLINT [build/include_subdir]
+#include "random_functions.h"               // NOLINT [build/include_subdir]
 
 #include <Rcpp.h>
-using namespace Rcpp;
 
 int getRecomPos(int L,
                 rnd_t& rnd) {
@@ -25,25 +37,27 @@ int getRecomPos(int L,
     return pos;
 }
 
-std::vector<junction> recombine_new(const std::vector<junction>& chromosome1,
-                                    const std::vector<junction>& chromosome2,
-                                    const std::vector<double>& recom_positions) {
-
- //   assert(!chromosome1.empty());    // not strictly enforced by code
-//    assert(!chromosome2.empty());    // not strictly enforced bu code
+std::vector<junction> recombine_new(
+    const std::vector<junction>& chromosome1,
+    const std::vector<junction>& chromosome2,
+    const std::vector<double>& recom_positions) {
 
     // we need something that is cheaply swappable:
     auto* g1 = &chromosome1;
     auto* g2 = &chromosome2;
-    std::vector<junction> go;   // offspring genome: recycle what's already there...
+    // offspring genome: recycle what's already there...
+    std::vector<junction> go;
 
 
     // predicate for lower_bound
     auto less = [](const auto& j, double p) { return j.pos < p; };
 
     // helper lambda to get the value just *before* it.
-    // we store the value to the right of a recombination-point but we need the value to the left:
-    auto value_at = [](auto begin, auto it) { return (begin != it) ? (it - 1)->right : -1; };
+    // we store the value to the right of a recombination-point
+    // but we need the value to the left:
+    auto value_at = [](auto begin, auto it) {
+        return (begin != it) ? (it - 1)->right : -1;
+    };
 
     double left_pos = 0.0;
     auto go_val = -1;
@@ -51,13 +65,13 @@ std::vector<junction> recombine_new(const std::vector<junction>& chromosome1,
         auto it = std::lower_bound(g1->cbegin(), g1->cend(), left_pos, less);
         auto last = std::lower_bound(it, g1->cend(), right_pos, less);
         // [g1.first, it) : part of the genome *before* left_pos.
-        // [it, last) : part of the genome *after or equal to* left_pos but *before* right_pos.
+        // [it, last)     : part of the genome *after or equal to*
+        //                  left_pos but *before* right_pos.
         auto g1_val = value_at(g1->cbegin(), it);
         if (g1_val != go_val) {
             if (it == last || it->pos != left_pos) {
                 go.emplace_back(left_pos, g1_val);   // insert change to match
-            }
-            else {
+            } else {
                 ++it;    // corner case: skip spurious double-change
             }
         }
@@ -72,60 +86,51 @@ std::vector<junction> recombine_new(const std::vector<junction>& chromosome1,
 
 std::vector<double> generate_recomPos(size_t number_of_recombinations,
                                       rnd_t& rndgen) {
-
     std::vector<double> recomPos(number_of_recombinations, 0);
-    for(size_t i = 0; i < number_of_recombinations; ++i) {
+    for (size_t i = 0; i < number_of_recombinations; ++i) {
         recomPos[i] = rndgen.uniform();
     }
     std::sort(recomPos.begin(), recomPos.end());
     if (recomPos.size() != number_of_recombinations) {
-        stop("mismatch\n");
+        Rcpp::stop("mismatch\n");
     }
     recomPos.push_back(1.0);
 
     return recomPos;
 }
 
-void Recombine_inf(        std::vector<junction>& offspring,
-                     const std::vector<junction>& chromosome1,
-                     const std::vector<junction>& chromosome2,
-                     double MORGAN,
-                     rnd_t& rndgen)  {
-
+void Recombine_inf(      std::vector<junction>& offspring,
+                   const std::vector<junction>& chromosome1,
+                   const std::vector<junction>& chromosome2,
+                   double MORGAN,
+                   rnd_t& rndgen)  {
     int numRecombinations = rndgen.poisson(MORGAN);
 
     if (numRecombinations == 0) {
         offspring.insert(offspring.end(),
                          chromosome1.begin(),
                          chromosome1.end());
-
         return;
     }
-
     std::vector<double> recomPos = generate_recomPos(numRecombinations,
                                                      rndgen);
-
-
-
     offspring = recombine_new(chromosome1,
                               chromosome2,
                               recomPos);
-
     return;
 }
 
 Fish_inf mate_inf(const Fish_inf& A,
                   const Fish_inf& B,
                   double numRecombinations,
-                  rnd_t& rndgen)
-{
+                  rnd_t& rndgen) {
     Fish_inf offspring;
     offspring.chromosome1.clear();
-    offspring.chromosome2.clear(); //just to be sure.
+    offspring.chromosome2.clear();     // just to be sure.
 
-    //first the father chromosome
+    //  first the father chromosome
     int event = rndgen.random_number(2);
-    switch(event) {
+    switch (event) {
         case 0:  {
             Recombine_inf(offspring.chromosome1,
                           A.chromosome1,
@@ -144,9 +149,9 @@ Fish_inf mate_inf(const Fish_inf& A,
         }
     }
 
-    //then the mother chromosome
+    //  then the mother chromosome
     event = rndgen.random_number(2);
-    switch(event) {
+    switch (event) {
         case 0:  {
             Recombine_inf(offspring.chromosome2,
                           B.chromosome1,
@@ -173,17 +178,10 @@ void Recombine_fin(std::vector<bool>* offspring,
                    std::vector<bool> chromosome2,
                    double numberRecombinations,
                    rnd_t& rndgen)  {
-    // we have a decimal value, the fractional part is interpreted as
-    // a probability of one extra recombination, note that we do NOT
-    // assume a poisson distributed number of recombinations
-    // this has been proven inaccurate, and tends to overestimate
-    // the number of meioses without recombination
-
     numberRecombinations = rndgen.poisson(numberRecombinations);
 
     // if there are not recombinations, preliminary exit
     if (numberRecombinations == 0) {
-        //offspring = &chromosome1;
         offspring->insert(offspring->end(),
                           chromosome1.begin(),
                           chromosome1.end() );
@@ -202,7 +200,7 @@ void Recombine_fin(std::vector<bool>* offspring,
         // to apply crossover
         std::sort(recomPos.begin(), recomPos.end());
         // remove duplicate recombination sites
-        std::vector<int>::iterator last = std::unique(recomPos.begin(), recomPos.end());
+        auto last = std::unique(recomPos.begin(), recomPos.end());
         recomPos.erase(last, recomPos.end());
     }
 
@@ -246,7 +244,6 @@ Fish_fin mate_fin(const Fish_fin& A,
                   const Fish_fin& B,
                   double numberRecombinations,
                   rnd_t& rndgen) {
-
     Fish_fin offspring;
     offspring.chromosome1.clear();
     offspring.chromosome2.clear();  // just to be sure.
@@ -279,9 +276,8 @@ Fish_fin mate_fin(const Fish_fin& A,
     return offspring;
 }
 /////////////////////////////////////////////
-////////////// Member functions
+//////////////  Member functions
 /////////////////////////////////////////////
-
 
 junction::junction() {
 }
@@ -294,17 +290,16 @@ junction::junction(const junction& other) {
     right = other.right;
 }
 
-Fish_inf::Fish_inf(){
-
+Fish_inf::Fish_inf() {
 }
 
 Fish_inf::Fish_inf(int initLoc)    {
-    junction left = junction(0.0, initLoc);
+    junction left  = junction(0.0, initLoc);
     junction right = junction(1, -1);
-    chromosome1.push_back( left  );
-    chromosome1.push_back( right );
-    chromosome2.push_back( left  );
-    chromosome2.push_back( right );
+    chromosome1.push_back(left);
+    chromosome1.push_back(right);
+    chromosome2.push_back(left);
+    chromosome2.push_back(right);
 }
 
 Fish_fin::Fish_fin() {
@@ -347,11 +342,9 @@ Fish_inf& Fish_inf::operator=(const Fish_inf& other) {
 
 bool is_in_time_points(int t,
                        const Rcpp::NumericVector& time_points) {
-
     for (auto i : time_points) {
         int comp = static_cast<int>(i);
         if (comp == t) return true;
     }
-
     return false;
 }

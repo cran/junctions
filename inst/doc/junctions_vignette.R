@@ -2,7 +2,7 @@
 library(junctions)
 knitr::opts_chunk$set(echo = TRUE)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  sim_inf_chrom(pop_size,
 #                initial_heterozygosity,
 #                total_runtime,
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #                markers,
 #                seed)
 
-## ---- single_sim_inf, fig.width = 7, fig.height = 7---------------------------
+## ----single_sim_inf, fig.width = 7, fig.height = 7----------------------------
 pop_size <- 100 # population size
 h_0 <- 0.5 # initial heterozygosity
 maximum_time <- 1000 # run time
@@ -32,7 +32,7 @@ plot(v$avgJunctions,
      ylab = "Number of Junctions",
      main = "Example Infinite Chromosome")
 
-## ---- repl_sim_inf------------------------------------------------------------
+## ----repl_sim_inf-------------------------------------------------------------
 number_replicates <- 10
 v <- c()
 for (r in 1:number_replicates) {
@@ -46,7 +46,7 @@ for (r in 1:number_replicates) {
 }
 v <- colMeans(v) #mean across replicates
 
-## ---- plot_sim_inf, fig.width = 7, fig.height = 7-----------------------------
+## ----plot_sim_inf, fig.width = 7, fig.height = 7------------------------------
 clarity <- seq(1,
                maximum_time,
                length.out = 50) # we plot not all points, for clarity
@@ -59,7 +59,7 @@ t <- 0:maximum_time
 predicted <- number_of_junctions(N = pop_size, H_0 = h_0, C = c, t = t)
 lines(predicted ~ t, col = "blue")
 
-## ---- single_sim_random, fig.width = 7, fig.height = 7------------------------
+## ----single_sim_random, fig.width = 7, fig.height = 7-------------------------
 pop_size <- 100 # population size
 h_0 <- 0.5 # initial heterozygosity
 maximum_time <- 1000 # run time
@@ -85,7 +85,7 @@ legend("bottomright",
        lty = 1,
        col = c("black", "blue"))
 
-## ---- repl_sim_random---------------------------------------------------------
+## ----repl_sim_random----------------------------------------------------------
 mean_junctions <- c()
 detected_junctions <- c()
 for (r in 1:number_replicates) {
@@ -103,7 +103,7 @@ for (r in 1:number_replicates) {
 mean_junctions <- colMeans(mean_junctions)
 detected_junctions <- colMeans(detected_junctions)
 
-## ---- plot_sim_random, fig.width = 7, fig.height = 7--------------------------
+## ----plot_sim_random, fig.width = 7, fig.height = 7---------------------------
 #we plot not all points, for clarity
 clarity <- seq(1, maximum_time, length.out = 50)
 plot(mean_junctions[clarity] ~ clarity,
@@ -137,7 +137,7 @@ legend("bottomright",
                "black", "blue"),
        lwd = 2)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  sim_fin_chrom(pop_size,
 #                initial_heterozygosity,
 #                total_runtime,
@@ -145,7 +145,7 @@ legend("bottomright",
 #                seed,
 #                R)
 
-## ---- single_sim_fin, fig.width = 7, fig.height = 7---------------------------
+## ----single_sim_fin, fig.width = 7, fig.height = 7----------------------------
 r <- 100 # chromosome size
 n <- 100 # population size
 freq_ancestor_1 <- 0.5 # frequency of ancestor 1 at t = 0
@@ -164,7 +164,7 @@ plot(v$avgJunctions, type = "l",
      ylab = "Number of Junctions",
      main = "Example Finite Chromosome")
 
-## ---- repl_sim_fin------------------------------------------------------------
+## ----repl_sim_fin-------------------------------------------------------------
 v <- c()
 for (repl in 1:number_replicates) {
   v2 <- sim_fin_chrom(pop_size = n,
@@ -177,7 +177,7 @@ for (repl in 1:number_replicates) {
 }
 v <- colMeans(v)
 
-## ---- plot_sim_fin, fig.width = 7, fig.height = 7-----------------------------
+## ----plot_sim_fin, fig.width = 7, fig.height = 7------------------------------
 clarity <- seq(1, 1000, length.out = 50) #we plot not all points, for clarity
 plot(v[clarity] ~ clarity, lwd = 2,
      xlab = "Generations",
@@ -195,7 +195,7 @@ legend("bottomright", c("Simulated", "Predicted"),
        lty = c(NA, 1),
        col = c("black", "blue"))
 
-## ---- equations---------------------------------------------------------------
+## ----equations----------------------------------------------------------------
 num_j <- number_of_junctions(N = 100,
                              R = 1000,
                              H_0 = 0.5,
@@ -234,7 +234,7 @@ calculate_mat(N = 100,
               H_0 = 0.5,
               C = 1)
 
-## ---- fig.width = 7, fig.height = 7-------------------------------------------
+## ----fig.width = 7, fig.height = 7--------------------------------------------
 maximum_time <- 1000
 t <- 0:maximum_time
 num_j <- number_of_junctions(N = 100,

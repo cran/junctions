@@ -1,3 +1,13 @@
+// Copyright 2018 - 2024 Thijs Janzen
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
 //  Fish.hpp
 //
@@ -6,8 +16,7 @@
 //
 //
 
-#ifndef Fish_hpp
-#define Fish_hpp
+#pragma once
 
 #include <stdio.h>
 #include <vector>
@@ -30,7 +39,7 @@ struct Fish_inf {
     std::vector< junction > chromosome2;
 
     Fish_inf();
-    Fish_inf(int initLoc);
+    explicit Fish_inf(int initLoc);
     Fish_inf(const Fish_inf& other);
     Fish_inf(Fish_inf&& other);
     Fish_inf& operator=(Fish_inf&& other);
@@ -65,29 +74,28 @@ struct Fish_explicit {
     std::vector< int > gamete(double morgan,
                               rnd_t& rndgen,
                               const emp_genome& emp_gen) const {
-
         std::vector<size_t> recom_pos = emp_gen.recompos(morgan,
                                                          rndgen);
-
         if (recom_pos.size() == 1) {
-            if(rndgen.random_number(2)) {
+            if (rndgen.random_number(2)) {
                 return chromosome1;
             }
             return chromosome2;
         }
 
-        std::vector < std::vector<int>::const_iterator > iters = {chromosome1.begin(),
-                                                                  chromosome2.begin()};
+        std::vector < std::vector<int>::const_iterator > iters =
+                                    {chromosome1.begin(), chromosome2.begin()};
         std::vector< int > recombined_chromosome;
         int index = rndgen.random_number(2);
         size_t prev_start = 0;
 
-        for(size_t i = 0; i < recom_pos.size(); ++i) {
+        for (size_t i = 0; i < recom_pos.size(); ++i) {
             auto start = iters[index] + prev_start;
             auto end   = iters[index] + recom_pos[i];
 
             prev_start = recom_pos[i];
-            recombined_chromosome.insert(recombined_chromosome.end(), start, end);
+            recombined_chromosome.insert(recombined_chromosome.end(),
+                                         start, end);
             index = 1 - index;
         }
 
@@ -108,5 +116,3 @@ int getRecomPos(int L, rnd_t& rndgen);
 
 bool is_in_time_points(int t,
                        const Rcpp::NumericVector& time_points);
-
-#endif /* Fish_hpp */

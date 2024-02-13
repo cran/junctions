@@ -1,3 +1,13 @@
+// Copyright 2018 - 2024 Thijs Janzen
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
 //  Output.hpp
 //
@@ -6,16 +16,11 @@
 //
 //
 
-#ifndef Output_hpp
-#define Output_hpp
+#pragma once
 
 #include <stdio.h>
 #include "Fish.h"
 #include <vector>
-
-#include <chrono>
-#include <thread>
-
 
 struct Output {
     std::vector<double> avgJunctions;
@@ -52,5 +57,3 @@ struct Output {
     void detect_junctions_backcross(const std::vector< Fish_inf > &Pop,
                                       const std::vector<double> &markers);
 };
-
-#endif /* Output_hpp */
