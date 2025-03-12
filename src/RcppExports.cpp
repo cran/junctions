@@ -47,7 +47,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // loglikelihood_unphased_cpp
-double loglikelihood_unphased_cpp(const Rcpp::NumericMatrix& local_anc_matrix, const Rcpp::NumericVector& locations, int pop_size, double freq_ancestor_1, double t, bool phased, bool verbose, int num_threads);
+double loglikelihood_unphased_cpp(const Rcpp::NumericMatrix& local_anc_matrix, const Rcpp::NumericVector& locations, int pop_size, double freq_ancestor_1, double t, bool phased, bool verbose, size_t num_threads);
 RcppExport SEXP _junctions_loglikelihood_unphased_cpp(SEXP local_anc_matrixSEXP, SEXP locationsSEXP, SEXP pop_sizeSEXP, SEXP freq_ancestor_1SEXP, SEXP tSEXP, SEXP phasedSEXP, SEXP verboseSEXP, SEXP num_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -59,7 +59,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type t(tSEXP);
     Rcpp::traits::input_parameter< bool >::type phased(phasedSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
+    Rcpp::traits::input_parameter< size_t >::type num_threads(num_threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(loglikelihood_unphased_cpp(local_anc_matrix, locations, pop_size, freq_ancestor_1, t, phased, verbose, num_threads));
     return rcpp_result_gen;
 END_RCPP
@@ -97,7 +97,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // sim_phased_unphased_cpp
-Rcpp::List sim_phased_unphased_cpp(int pop_size, double freq_ancestor_1, int total_runtime, double size_in_morgan, Rcpp::NumericVector markers, Rcpp::NumericVector time_points, bool verbose, bool record_true_junctions, int num_indiv_sampled, int num_threads);
+Rcpp::List sim_phased_unphased_cpp(int pop_size, double freq_ancestor_1, int total_runtime, double size_in_morgan, Rcpp::NumericVector markers, Rcpp::NumericVector time_points, bool verbose, bool record_true_junctions, int num_indiv_sampled, size_t num_threads);
 RcppExport SEXP _junctions_sim_phased_unphased_cpp(SEXP pop_sizeSEXP, SEXP freq_ancestor_1SEXP, SEXP total_runtimeSEXP, SEXP size_in_morganSEXP, SEXP markersSEXP, SEXP time_pointsSEXP, SEXP verboseSEXP, SEXP record_true_junctionsSEXP, SEXP num_indiv_sampledSEXP, SEXP num_threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -111,7 +111,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< bool >::type record_true_junctions(record_true_junctionsSEXP);
     Rcpp::traits::input_parameter< int >::type num_indiv_sampled(num_indiv_sampledSEXP);
-    Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
+    Rcpp::traits::input_parameter< size_t >::type num_threads(num_threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(sim_phased_unphased_cpp(pop_size, freq_ancestor_1, total_runtime, size_in_morgan, markers, time_points, verbose, record_true_junctions, num_indiv_sampled, num_threads));
     return rcpp_result_gen;
 END_RCPP

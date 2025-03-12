@@ -16,8 +16,10 @@
 //
 //
 
-#include "Output.h"
+
+#include "Output.h" // NOLINT [build/include_subdir]
 #include "Rcpp.h"
+#include <vector>
 
 void Output::update_inf(const std::vector<Fish_inf>& Pop) {
     double averageNumJunctions = 0;
@@ -143,7 +145,7 @@ void Output::update_unphased(const std::vector< Fish_inf >& Pop,
 
 int detect_junctions(const Fish_inf& indiv,
                      const std::vector<double> &markers,
-                     double& avg_heterozygosity) {
+                     double* avg_heterozygosity) {
     // we need to find if at specific markers,
     // they are homozygous or heterozygous
     std::vector<bool> chrom1 = detectJunctions(indiv.chromosome1, markers);
@@ -178,7 +180,7 @@ int detect_junctions(const Fish_inf& indiv,
         }
         if (genotypes[i] == 1) number_heterozygous++;
     }
-    avg_heterozygosity += 1.0 * number_heterozygous / markers.size();
+    *avg_heterozygosity += 1.0 * number_heterozygous / markers.size();
 
     return number_of_junctions;
 }
@@ -191,7 +193,7 @@ void Output::detect_junctions_backcross(const std::vector< Fish_inf > &Pop,
     std::vector<int> J;
     double avg_heterozygosity = 0.0;
     for (const auto& i : Pop) {
-        int dJ = detect_junctions(i, markers, avg_heterozygosity);
+        int dJ = detect_junctions(i, markers, &avg_heterozygosity);
         average_detected_junctions += dJ;
         J.push_back(dJ);
     }
@@ -201,24 +203,5 @@ void Output::detect_junctions_backcross(const std::vector< Fish_inf > &Pop,
              1.0 * average_detected_junctions / (2 * Pop.size());   //  diploid
     avg_detected_Junctions.push_back(average_detected_junctions);
     avg_hetero.push_back(avg_heterozygosity / Pop.size());
-    return;
-}
-
-void Output::update_unphased(const std::vector< Fish_explicit >& Pop,
-                             size_t t,
-                             bool record_true_junctions,
-                             double morgan,
-                             size_t num_indiv) {
-    for (size_t i = 0; i < num_indiv; ++i) {
-        for (unsigned int j = 0; j < markers.size(); ++j) {
-            std::vector<double> to_add(5);
-            to_add[0] = t;
-            to_add[1] = i;   //  individual
-            to_add[2] = markers[j] * morgan;
-            to_add[3] = Pop[i].chromosome1[j];
-            to_add[4] = Pop[i].chromosome2[j];
-            results.push_back(to_add);
-        }
-    }
     return;
 }

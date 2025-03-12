@@ -21,9 +21,9 @@
 
 #include <RcppParallel.h>
 
-#include "estimate_time_unphased.h"
-#include "Output.h"
-#include "util.h"
+#include "estimate_time_unphased.h" // NOLINT [build/include_subdir]
+#include "Output.h"                 // NOLINT [build/include_subdir]
+#include "util.h"                   // NOLINT [build/include_subdir]
 
 
 namespace detail {
@@ -151,8 +151,6 @@ std::vector< chromosome > create_chromosomes(
   return output;
 }
 
-
-
 // [[Rcpp::export]]
 Rcpp::List estimate_time_cpp(const Rcpp::NumericMatrix& local_anc_matrix,
                              const Rcpp::NumericVector& locations,
@@ -237,8 +235,8 @@ double loglikelihood_unphased_cpp(const Rcpp::NumericMatrix& local_anc_matrix,
                                   double t,
                                   bool phased,
                                   bool verbose = false,
-                                  int num_threads = 1) {
-  detail::num_threads = num_threads;
+                                  size_t num_threads = 1) {
+  set_num_threads();
   if (local_anc_matrix.ncol() != 3) {
     Rcpp::stop("local ancestry matrix has to have 3 columns");
   }
@@ -260,9 +258,9 @@ std::vector< double > single_state_cpp(int t, int N, double d) {
   // I verified this with the synonymous R code, and it generates
   // the correct answer.
   // the cpp version is about 6 times faster:
-  //                                            expr    min      lq     mean  median      uq     max neval cld
-  // single_state(t = 100, N = 1000, d = 1e-05) 19.094 20.4415 22.72457 21.1695 21.9395 104.379   100   b
-  // single_state_cpp(t = 100, N = 1000, d = 1e-05)  3.236  3.7970  4.32687  4.0560  4.3925  14.303   100  a
+  //                                            expr    min      lq     mean  median      uq     max neval cld // NOLINT
+  // single_state(t = 100, N = 1000, d = 1e-05) 19.094 20.4415 22.72457 21.1695 21.9395 104.379   100   b      // NOLINT
+  // single_state_cpp(t = 100, N = 1000, d = 1e-05)  3.236  3.7970  4.32687  4.0560  4.3925  14.303   100  a   // NOLINT
   double trans_matrix[7][7] =
     {{1.0 - 1.0 / (2*N) - 2 * d , 2 * d, 0, 0, 0, 1.0 / (2*N), 0},
     {1.0 / (2*N), 1 - 3 * 1.0 / (2*N) - d, d, 2 * 1.0 / (2*N), 0, 0, 0},
@@ -513,20 +511,16 @@ double chromosome::calculate_likelihood(double t,
                                         int pop_size,
                                         double freq_ancestor_1) const {
   if (t < 1) {
-    Rcpp::Rcout << "t < 1\n";
-    throw "t < 1";
+    Rcpp::stop("t < 1");
   }
   if (pop_size < 2) {
-    Rcpp::Rcout << "pop_size < 2\n";
-    throw "pop_size < 2";
+    Rcpp::stop("pop_size < 2");
   }
   if (freq_ancestor_1 >= 1) {
-    Rcpp::Rcout << "p >= 1\n";
-    throw "p >= 1";
+    Rcpp::stop("p >= 1");
   }
   if (freq_ancestor_1 <= 0) {
-    Rcpp::Rcout << "p <= 0\n";
-    throw "p <= 0";
+    Rcpp::stop("p <= 0");
   }
 
   std::vector< double> ll(distances.size());
@@ -545,7 +539,6 @@ double chromosome::calculate_likelihood(double t,
     }
   } else {
     set_num_threads();
-
     tbb::parallel_for(
       tbb::blocked_range<unsigned>(1, distances.size()),
       [&](const tbb::blocked_range<unsigned>& r) {
@@ -558,6 +551,7 @@ double chromosome::calculate_likelihood(double t,
         }
       });
   }
+
   double answer = std::accumulate(ll.begin(), ll.end(), 0.0);
   return(answer);
 }
