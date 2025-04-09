@@ -3,12 +3,12 @@ library(junctions)
 knitr::opts_chunk$set(echo = TRUE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  sim_inf_chrom(pop_size,
-#                initial_heterozygosity,
-#                total_runtime,
-#                morgan,
-#                markers,
-#                seed)
+# sim_inf_chrom(pop_size,
+#               initial_heterozygosity,
+#               total_runtime,
+#               morgan,
+#               markers,
+#               seed)
 
 ## ----single_sim_inf, fig.width = 7, fig.height = 7----------------------------
 pop_size <- 100 # population size
@@ -138,12 +138,12 @@ legend("bottomright",
        lwd = 2)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  sim_fin_chrom(pop_size,
-#                initial_heterozygosity,
-#                total_runtime,
-#                morgan,
-#                seed,
-#                R)
+# sim_fin_chrom(pop_size,
+#               initial_heterozygosity,
+#               total_runtime,
+#               morgan,
+#               seed,
+#               R)
 
 ## ----single_sim_fin, fig.width = 7, fig.height = 7----------------------------
 r <- 100 # chromosome size
