@@ -7,12 +7,12 @@ require(ggplot2)
 require(magrittr)
 
 ## ----phased unphased simulation-----------------------------------------------
-  simulated_pop <- junctions::sim_phased_unphased(pop_size = 1000,
-freq_ancestor_1 = 0.5,
-total_runtime = 100,
-size_in_morgan = 1,
-markers = sort(runif(n = 1000, 0, 1)),
-time_points = seq(0, 100, by = 10))
+simulated_pop <- junctions::sim_phased_unphased(pop_size = 1000,
+                                                freq_ancestor_1 = 0.5,
+                                                total_runtime = 100,
+                                                size_in_morgan = 1,
+                                                markers = sort(runif(n = 1000, 0, 1)),
+                                                time_points = seq(0, 100, by = 10))
 
 ## ----sim fin chrom------------------------------------------------------------
 junctions_fin_chrom <- junctions::sim_fin_chrom(pop_size = 1000,
@@ -40,7 +40,6 @@ legend("topleft", legend = c("Finite chromosome", "Infinite chromosome",
 
 ## ----backcrossing-------------------------------------------------------------
 backcross_result <- junctions::sim_backcrossing(population_size = 1000,
-                                                freq_ancestor_1 = 0.5,
                                                 total_runtime = 20,
                                                 size_in_morgan = 1,
                                                 number_of_markers = 100)
